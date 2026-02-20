@@ -20,6 +20,21 @@ def display_menu():
     print(", ".join(POSITIONS))
     print(LINE)
 
+def get_int(prompt):
+    while True:
+        try:
+            return int(input(prompt))
+        except ValueError:
+            print("Invalid integer. Try again.")
+
+def get_position():
+    while True:
+        pos = input("Position: ").upper().strip()
+        if pos in POSITIONS:
+            return pos
+        print("Invalid position. Try again.")
+
+
 
 def calc_avg(at_bats, hits):
     if at_bats == 0:
@@ -40,6 +55,28 @@ def display_lineup(lineup):
         print(f"{i:<2} {name:<20}{pos:<5}{ab:<6}{hits:<6}{avg:.3f}")
     print()
 
+def add_player(players):
+    print("\nAdd Player")
+    name = input("Name: ").strip()
+
+    pos = get_position()
+
+    at_bats = get_int("At bats: ")
+    while at_bats < 0:
+        print("At bats must be 0 or more.")
+        at_bats = get_int("At bats: ")
+
+    hits = get_int("Hits: ")
+    while hits < 0 or hits > at_bats:
+        print("Hits must be between 0 and at bats.")
+        hits = get_int("Hits: ")
+
+    
+    players.append([name, pos, str(at_bats), str(hits)])
+    db.write_players(players)
+    print(f"{name} was added.\n")
+
+
 
 def main():
     players = db.read_players()   # load from CSV at start
@@ -52,7 +89,10 @@ def main():
             display_lineup(players)
         elif choice == "7":
             print("Bye!")
-            break
+
+        elif choice == "2":
+            add_player(players)
+
         else:
             print("Feature not added yet.\n")
 
