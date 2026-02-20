@@ -71,11 +71,38 @@ def add_player(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("Hits: ")
 
-    
     players.append([name, pos, str(at_bats), str(hits)])
     db.write_players(players)
     print(f"{name} was added.\n")
 
+def remove_player(players):
+    # display section title
+    print("\nRemove Player")
+
+    # check if there are players in the list first
+    if len(players) == 0:
+        print("No players to remove.\n")
+        return
+
+    # show current lineup so user can choose correctly
+    display_lineup(players)
+
+    # get player number from user
+    number = get_int("Player number to remove: ")
+
+    # validate player number range
+    if number < 1 or number > len(players):
+        print("Invalid player number.\n")
+        return
+
+    # remove player from list (minus 1 because list index starts at 0)
+    removed = players.pop(number - 1)
+
+    # save updated lineup back to CSV file
+    db.write_players(players)
+
+    # confirm removal to user
+    print(f"{removed[0]} was removed.\n")
 
 
 def main():
@@ -92,6 +119,9 @@ def main():
 
         elif choice == "2":
             add_player(players)
+        
+        elif choice == "3":
+            remove_player(players)
 
         else:
             print("Feature not added yet.\n")
