@@ -104,6 +104,46 @@ def remove_player(players):
     # confirm removal to user
     print(f"{removed[0]} was removed.\n")
 
+def move_player(players):
+    # show section title
+    print("\nMove Player")
+
+    # check if lineup has players
+    if len(players) == 0:
+        print("No players to move.\n")
+        return
+
+    # show lineup so user knows player numbers
+    display_lineup(players)
+
+    # get player number to move
+    old_num = get_int("Current lineup number: ")
+
+    # validate player number
+    if old_num < 1 or old_num > len(players):
+        print("Invalid player number.\n")
+        return
+
+    # get new lineup position
+    new_num = get_int("New lineup number: ")
+
+    # validate new position
+    if new_num < 1 or new_num > len(players):
+        print("Invalid lineup position.\n")
+        return
+
+    # remove player from old position
+    player = players.pop(old_num - 1)
+
+    # insert player into new position
+    players.insert(new_num - 1, player)
+
+    # save updated lineup to CSV
+    db.write_players(players)
+
+    # confirm move to user
+    print(f"{player[0]} moved to position {new_num}.\n")
+
 
 def main():
     players = db.read_players()   # load from CSV at start
@@ -122,6 +162,9 @@ def main():
         
         elif choice == "3":
             remove_player(players)
+
+        elif choice == "4":
+            move_player(players)
 
         else:
             print("Feature not added yet.\n")
