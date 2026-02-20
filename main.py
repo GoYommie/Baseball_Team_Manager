@@ -27,6 +27,13 @@ def get_int(prompt):
         except ValueError:
             print("Invalid integer. Try again.")
 
+def get_menu_option():
+    while True:
+        option = input("Menu option: ").strip()
+        if option in ("1","2","3","4","5","6","7"):
+            return option
+        print("Invalid menu option. Try again.\n")
+
 def get_position():
     while True:
         pos = input("Position: ").upper().strip()
@@ -38,7 +45,7 @@ def lineup_is_empty(players, action_name):
     if len(players) == 0:
         print(f"\nNo players to {action_name}.\n")
         return True
-    return False
+        return False
 
 def calc_avg(at_bats, hits):
     if at_bats == 0:
@@ -235,7 +242,7 @@ def main():
 
     while True:
         display_menu()
-        choice = input("Menu option: ").strip()
+        choice = get_menu_option()
 
         if choice == "1":
             display_lineup(players)
