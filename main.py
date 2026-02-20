@@ -176,6 +176,48 @@ def edit_position(players):
     # confirm update
     print("Player position updated.\n")
 
+def edit_stats(players):
+    # show section title
+    print("\nEdit Player Stats")
+
+    # check if lineup has players
+    if len(players) == 0:
+        print("No players to edit.\n")
+        return
+
+    # display lineup so user sees numbers
+    display_lineup(players)
+
+    # get player number
+    number = get_int("Player number: ")
+
+    # validate player number
+    if number < 1 or number > len(players):
+        print("Invalid player number.\n")
+        return
+
+    # get new at bats value
+    at_bats = get_int("New at bats: ")
+    while at_bats < 0:
+        print("At bats must be 0 or more.")
+        at_bats = get_int("New at bats: ")
+
+    # get new hits value
+    hits = get_int("New hits: ")
+    while hits < 0 or hits > at_bats:
+        print("Hits must be between 0 and at bats.")
+        hits = get_int("New hits: ")
+
+    # update values in lineup
+    players[number - 1][2] = str(at_bats)
+    players[number - 1][3] = str(hits)
+
+    # save updated lineup to CSV
+    db.write_players(players)
+
+    # confirm update
+    print("Player stats updated.\n")
+
 
 def main():
     players = db.read_players()   # load from CSV at start
@@ -200,6 +242,9 @@ def main():
 
         elif choice == "5":
             edit_position(players)
+
+        elif choice == "6":
+            edit_stats(players)
 
         else:
             print("Feature not added yet.\n")
