@@ -144,6 +144,38 @@ def move_player(players):
     # confirm move to user
     print(f"{player[0]} moved to position {new_num}.\n")
 
+def edit_position(players):
+    # show section title
+    print("\nEdit Player Position")
+
+    # check if lineup has players
+    if len(players) == 0:
+        print("No players to edit.\n")
+        return
+
+    # display lineup so user sees numbers
+    display_lineup(players)
+
+    # get player number
+    number = get_int("Player number: ")
+
+    # validate player number
+    if number < 1 or number > len(players):
+        print("Invalid player number.\n")
+        return
+
+    # get new valid position
+    new_pos = get_position()
+
+    # update position in list
+    players[number - 1][1] = new_pos
+
+    # save updated lineup to CSV
+    db.write_players(players)
+
+    # confirm update
+    print("Player position updated.\n")
+
 
 def main():
     players = db.read_players()   # load from CSV at start
@@ -165,6 +197,9 @@ def main():
 
         elif choice == "4":
             move_player(players)
+
+        elif choice == "5":
+            edit_position(players)
 
         else:
             print("Feature not added yet.\n")
