@@ -43,17 +43,27 @@ def calc_avg(at_bats, hits):
 
 
 def display_lineup(lineup):
-    print()
-    print(f"{'Player':<22}{'POS':<5}{'AB':<6}{'H':<6}{'AVG'}")
-    print("-" * 50)
+    # show lineup nicely formatted
+    print("\n" + LINE)
+    print(f"{'No':<4}{'Player':<22}{'POS':<5}{'AB':>6}{'H':>6}{'AVG':>8}")
+    print("-" * 64)
+
+    # handle empty list
+    if len(lineup) == 0:
+        print("No players in lineup.")
+        print(LINE + "\n")
+        return
+
     for i, p in enumerate(lineup, start=1):
         name = p[0]
         pos = p[1]
         ab = int(p[2])
         hits = int(p[3])
         avg = calc_avg(ab, hits)
-        print(f"{i:<2} {name:<20}{pos:<5}{ab:<6}{hits:<6}{avg:.3f}")
-    print()
+        print(f"{i:<4}{name:<22}{pos:<5}{ab:>6}{hits:>6}{avg:>8.3f}")
+
+    print(LINE + "\n")
+
 
 def add_player(players):
     print("\nAdd Player")
