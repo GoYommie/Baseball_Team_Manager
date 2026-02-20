@@ -34,7 +34,11 @@ def get_position():
             return pos
         print("Invalid position. Try again.")
 
-
+def lineup_is_empty(players, action_name):
+    if len(players) == 0:
+        print(f"\nNo players to {action_name}.\n")
+        return True
+    return False
 
 def calc_avg(at_bats, hits):
     if at_bats == 0:
@@ -90,8 +94,7 @@ def remove_player(players):
     print("\nRemove Player")
 
     # check if there are players in the list first
-    if len(players) == 0:
-        print("No players to remove.\n")
+    if lineup_is_empty(players, "remove"):
         return
 
     # show current lineup so user can choose correctly
@@ -119,8 +122,7 @@ def move_player(players):
     print("\nMove Player")
 
     # check if lineup has players
-    if len(players) == 0:
-        print("No players to move.\n")
+    if lineup_is_empty(players, "move"):
         return
 
     # show lineup so user knows player numbers
@@ -159,8 +161,7 @@ def edit_position(players):
     print("\nEdit Player Position")
 
     # check if lineup has players
-    if len(players) == 0:
-        print("No players to edit.\n")
+    if lineup_is_empty(players, "edit"):
         return
 
     # display lineup so user sees numbers
@@ -191,9 +192,9 @@ def edit_stats(players):
     print("\nEdit Player Stats")
 
     # check if lineup has players
-    if len(players) == 0:
-        print("No players to edit.\n")
+    if lineup_is_empty(players, "edit"):
         return
+
 
     # display lineup so user sees numbers
     display_lineup(players)
