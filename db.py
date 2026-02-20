@@ -1,17 +1,21 @@
 import csv
 
 FILENAME = "players.csv"
+FIELDNAMES = ["name", "pos", "ab", "h"]
 
 def read_players():
     players = []
     with open(FILENAME, newline="", encoding="utf-8") as f:
-        reader = csv.reader(f)
+        reader = csv.DictReader(f, fieldnames=FIELDNAMES)
         for row in reader:
-            # row: [full_name, position, at_bats, hits]
+            # convert numeric strings to int
+            row["ab"] = int(row["ab"])
+            row["h"] = int(row["h"])
             players.append(row)
     return players
 
 def write_players(players):
     with open(FILENAME, "w", newline="", encoding="utf-8") as f:
-        writer = csv.writer(f)
-        writer.writerows(players)
+        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+        for p in players:
+            writer.writerow(p)

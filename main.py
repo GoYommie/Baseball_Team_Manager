@@ -45,35 +45,25 @@ def lineup_is_empty(players, action_name):
     if len(players) == 0:
         print(f"\nNo players to {action_name}.\n")
         return True
-        return False
+    return False
 
-def calc_avg(at_bats, hits):
-    if at_bats == 0:
+def calc_avg(ab, hits):
+    if ab == 0:
         return 0.0
-    return round(hits / at_bats, 3)
+    return round(hits / ab, 3)
 
-
-def display_lineup(lineup):
-    # show lineup nicely formatted
-    print("\n" + LINE)
-    print(f"{'No':<4}{'Player':<22}{'POS':<5}{'AB':>6}{'H':>6}{'AVG':>8}")
+def display_lineup(players):
+    print(LINE)
+    print(f"{'No':<4}{'Player':<22}{'POS':<7}{'AB':>6}{'H':>6}{'AVG':>8}")
     print("-" * 64)
 
-    # handle empty list
-    if len(lineup) == 0:
-        print("No players in lineup.")
-        print(LINE + "\n")
-        return
+    for i, p in enumerate(players, start=1):
+        avg = calc_avg(p["ab"], p["h"])
+        print(f"{i:<4}{p['name']:<22}{p['pos']:<7}{p['ab']:>6}{p['h']:>6}{avg:>8.3f}")
 
-    for i, p in enumerate(lineup, start=1):
-        name = p[0]
-        pos = p[1]
-        ab = int(p[2])
-        hits = int(p[3])
-        avg = calc_avg(ab, hits)
-        print(f"{i:<4}{name:<22}{pos:<5}{ab:>6}{hits:>6}{avg:>8.3f}")
+    print(LINE)
+    print()
 
-    print(LINE + "\n")
 
 
 def add_player(players):
@@ -92,8 +82,9 @@ def add_player(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("Hits: ")
 
-    players.append([name, pos, str(at_bats), str(hits)])
+    players.append({"name": name, "pos": pos, "ab": at_bats, "h": hits})
     db.write_players(players)
+
     print(f"{name} was added.\n")
 
 def remove_player(players):
