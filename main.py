@@ -1,4 +1,5 @@
 import db
+from datetime import date, datetime
 
 # Constants
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
@@ -26,6 +27,28 @@ def get_int(prompt):
             return int(input(prompt))
         except ValueError:
             print("Invalid integer. Try again.")
+
+def get_date(prompt, allow_blank=True):
+    while True:
+        s = input(prompt).strip()
+        if allow_blank and s == "":
+            return None
+        try:
+            return datetime.strptime(s, "%Y-%m-%d").date()
+        except ValueError:
+            print("Invalid date. Use YYYY-MM-DD (example: 2026-03-21).")
+
+def display_header(current_date, game_date):
+    print(LINE)
+    print(" Baseball Team Manager")
+    print()
+    print(f"{'CURRENT DATE:':<15} {current_date:%Y-%m-%d}")
+    if game_date is not None:
+        print(f"{'GAME DATE:':<15} {game_date:%Y-%m-%d}")
+        days = (game_date - current_date).days
+        if days > 0:
+            print(f"{'DAYS UNTIL GAME:':<15} {days}")
+    print()
 
 def get_menu_option():
     while True:
@@ -113,7 +136,7 @@ def remove_player(players):
     db.write_players(players)
 
     # confirm removal to user
-    print(f"{removed[0]} was removed.\n")
+    print(f"{removed['name']} was removed.\n")
 
 def move_player(players):
     # show section title
@@ -152,7 +175,7 @@ def move_player(players):
     db.write_players(players)
 
     # confirm move to user
-    print(f"{player[0]} moved to position {new_num}.\n")
+    print(f"{player['name']} moved to position {new_num}.\n")
 
 def edit_position(players):
     # show section title
@@ -162,7 +185,6 @@ def edit_position(players):
     if lineup_is_empty(players, "edit"):
         return
 
-    # display lineup so user sees numbers
     display_lineup(players)
 
     # get player number
@@ -177,7 +199,7 @@ def edit_position(players):
     new_pos = get_position()
 
     # update position in list
-    players[number - 1][1] = new_pos
+    players[number - 1]["pos"] = new_pos
 
     # save updated lineup to CSV
     db.write_players(players)
@@ -218,8 +240,8 @@ def edit_stats(players):
         hits = get_int("New hits: ")
 
     # update values in lineup
-    players[number - 1][2] = str(at_bats)
-    players[number - 1][3] = str(hits)
+    players[number - 1]["ab"] = at_bats
+    players[number - 1]["h"] = hits
 
     # save updated lineup to CSV
     db.write_players(players)
@@ -231,7 +253,11 @@ def edit_stats(players):
 def main():
     players = db.read_players()   # load from CSV at start
 
+    current_date = date.today()
+    game_date = get_date("Game date (YYYY-MM-DD) (press Enter to skip): ", allow_blank=True)
+
     while True:
+        display_header(current_date, game_date)
         display_menu()
         choice = get_menu_option()
 
