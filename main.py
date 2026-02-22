@@ -1,5 +1,7 @@
 import db
 from datetime import date, datetime
+from lineup import Lineup
+from player import Player
 
 # Constants
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
@@ -81,12 +83,10 @@ def display_lineup(players):
     print("-" * 64)
 
     for i, p in enumerate(players, start=1):
-        avg = calc_avg(p["ab"], p["h"])
-        print(f"{i:<4}{p['name']:<22}{p['pos']:<7}{p['ab']:>6}{p['h']:>6}{avg:>8.3f}")
+        print(f"{i:<4}{p.name:<22}{p.pos:<7}{p.ab:>6}{p.h:>6}{p.avg():>8.3f}")
 
     print(LINE)
     print()
-
 
 
 def add_player(players):
