@@ -1,7 +1,7 @@
 import db
 from datetime import date, datetime
-from lineup import Lineup
-from player import Player
+from objects import Player,Lineup
+
 
 # Constants
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
@@ -186,8 +186,6 @@ def edit_position(players):
     db.write_players(players)
 
     print(f"{player.full_name}'s position updated to {new_pos}.\n")
-
-
 def edit_stats(players):
     print("\nEdit Player Stats")
 
@@ -211,9 +209,8 @@ def edit_stats(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("New hits: ")
 
-    player = players.get(number - 1)
-    player.ab = at_bats
-    player.h = hits
+    players[number - 1].ab = at_bats
+    players[number - 1].h = hits
 
     db.write_players(players)
 

@@ -1,5 +1,5 @@
 import csv
-from player import Player
+from objects import Player
 
 FILENAME = "players.csv"
 FIELDNAMES = ["first_name", "last_name", "pos", "ab", "h"]
