@@ -104,7 +104,7 @@ def add_player(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("Hits: ")
 
-    players.append(Player(first, last, pos, at_bats, hits))
+    players.add(Player(first, last, pos, at_bats, hits))
     db.write_players(players)
 
     print(f"{first} {last} was added.\n")
@@ -129,7 +129,7 @@ def remove_player(players):
         return
 
     # remove player from list (minus 1 because list index starts at 0)
-    removed = players.pop(number - 1)
+    removed = players.remove(number - 1)
 
     # save updated lineup back to CSV file
     db.write_players(players)
@@ -138,42 +138,31 @@ def remove_player(players):
     print(f"{removed.full_name} was removed.\n")
 
 def move_player(players):
-    # show section title
     print("\nMove Player")
 
-    # check if lineup has players
     if lineup_is_empty(players, "move"):
         return
 
-    # show lineup so user knows player numbers
     display_lineup(players)
 
-    # get player number to move
     old_num = get_int("Current lineup number: ")
-
-    # validate player number
     if old_num < 1 or old_num > len(players):
         print("Invalid player number.\n")
         return
 
-    # get new lineup position
     new_num = get_int("New lineup number: ")
-
-    # validate new position
     if new_num < 1 or new_num > len(players):
         print("Invalid lineup position.\n")
         return
 
-    # remove player from old position
-    player = players.pop(old_num - 1)
+    # get the player before moving 
+    player = players.get(old_num - 1)
 
-    # insert player into new position
-    players.insert(new_num - 1, player)
+    # move using Lineup method
+    players.move(old_num - 1, new_num - 1)
 
-    # save updated lineup to CSV
     db.write_players(players)
 
-    # confirm move to user
     print(f"{player.full_name} moved to position {new_num}.\n")
 
 def edit_position(players):
@@ -191,13 +180,13 @@ def edit_position(players):
 
     new_pos = get_position()
 
-    # Access Player object directly
-    player = players[number - 1]
+    player = players.get(number - 1)
     player.pos = new_pos
 
     db.write_players(players)
 
     print(f"{player.full_name}'s position updated to {new_pos}.\n")
+
 
 def edit_stats(players):
     print("\nEdit Player Stats")
@@ -222,15 +211,17 @@ def edit_stats(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("New hits: ")
 
-    players[number - 1].ab = at_bats
-    players[number - 1].h = hits
+    player = players.get(number - 1)
+    player.ab = at_bats
+    player.h = hits
 
     db.write_players(players)
 
     print("Player stats updated.\n")
 
 def main():
-    players = db.read_players()   # load from CSV at start
+    players = Lineup()
+    players.players = db.read_players()   # load from CSV at start
 
     current_date = date.today()
     game_date = get_date("Game date (YYYY-MM-DD) (press Enter to skip): ", allow_blank=True)
