@@ -18,7 +18,8 @@ class Player:
 
     def to_dict(self):
         return {
-            "name": self.full_name,
+            "first_name": self.first_name,
+            "last_name": self.last_name,
             "pos": self.pos,
             "ab": self.ab,
             "h": self.h
@@ -26,8 +27,4 @@ class Player:
 
     @staticmethod
     def from_dict(d):
-        # split full name into first and last
-        parts = d["name"].split(" ", 1)
-        first = parts[0]
-        last = parts[1] if len(parts) > 1 else ""
-        return Player(first, last, d["pos"], d["ab"], d["h"])
+        return Player(d["first_name"], d["last_name"], d["pos"], d["ab"], d["h"])

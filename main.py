@@ -79,20 +79,19 @@ def calc_avg(ab, hits):
 
 def display_lineup(players):
     print(LINE)
-    print(f"{'No':<4}{'Player':<22}{'POS':<7}{'AB':>6}{'H':>6}{'AVG':>8}")
+    print(f"{'No':<4}{'First':<12}{'Last':<14}{'POS':<6}{'AB':>6}{'H':>6}{'AVG':>8}")
     print("-" * 64)
 
     for i, p in enumerate(players, start=1):
-        print(f"{i:<4}{p.full_name:<22}{p.pos:<7}{p.ab:>6}{p.h:>6}{p.avg:>8.3f}")
+        print(f"{i:<4}{p.first_name:<12}{p.last_name:<14}{p.pos:<6}{p.ab:>6}{p.h:>6}{p.avg:>8.3f}")
 
     print(LINE)
     print()
 
-
 def add_player(players):
     print("\nAdd Player")
-    name = input("Name: ").strip()
-
+    first = input("First name: ").strip()
+    last = input("Last name: ").strip()
     pos = get_position()
 
     at_bats = get_int("At bats: ")
@@ -105,10 +104,10 @@ def add_player(players):
         print("Hits must be between 0 and at bats.")
         hits = get_int("Hits: ")
 
-    players.append({"name": name, "pos": pos, "ab": at_bats, "h": hits})
+    players.append(Player(first, last, pos, at_bats, hits))
     db.write_players(players)
 
-    print(f"{name} was added.\n")
+    print(f"{first} {last} was added.\n")
 
 def remove_player(players):
     # display section title
@@ -136,7 +135,7 @@ def remove_player(players):
     db.write_players(players)
 
     # confirm removal to user
-    print(f"{removed['name']} was removed.\n")
+    print(f"{removed.full_name} was removed.\n")
 
 def move_player(players):
     # show section title
@@ -175,80 +174,60 @@ def move_player(players):
     db.write_players(players)
 
     # confirm move to user
-    print(f"{player['name']} moved to position {new_num}.\n")
+    print(f"{player.full_name} moved to position {new_num}.\n")
 
 def edit_position(players):
-    # show section title
     print("\nEdit Player Position")
 
-    # check if lineup has players
     if lineup_is_empty(players, "edit"):
         return
 
     display_lineup(players)
 
-    # get player number
     number = get_int("Player number: ")
-
-    # validate player number
     if number < 1 or number > len(players):
         print("Invalid player number.\n")
         return
 
-    # get new valid position
     new_pos = get_position()
 
-    # update position in list
-    players[number - 1]["pos"] = new_pos
+    # Access Player object directly
+    player = players[number - 1]
+    player.pos = new_pos
 
-    # save updated lineup to CSV
     db.write_players(players)
 
-    # confirm update
-    print("Player position updated.\n")
+    print(f"{player.full_name}'s position updated to {new_pos}.\n")
 
 def edit_stats(players):
-    # show section title
     print("\nEdit Player Stats")
 
-    # check if lineup has players
     if lineup_is_empty(players, "edit"):
         return
 
-
-    # display lineup so user sees numbers
     display_lineup(players)
 
-    # get player number
     number = get_int("Player number: ")
-
-    # validate player number
     if number < 1 or number > len(players):
         print("Invalid player number.\n")
         return
 
-    # get new at bats value
     at_bats = get_int("New at bats: ")
     while at_bats < 0:
         print("At bats must be 0 or more.")
         at_bats = get_int("New at bats: ")
 
-    # get new hits value
     hits = get_int("New hits: ")
     while hits < 0 or hits > at_bats:
         print("Hits must be between 0 and at bats.")
         hits = get_int("New hits: ")
 
-    # update values in lineup
-    players[number - 1]["ab"] = at_bats
-    players[number - 1]["h"] = hits
+    players[number - 1].ab = at_bats
+    players[number - 1].h = hits
 
-    # save updated lineup to CSV
     db.write_players(players)
 
-    # confirm update
     print("Player stats updated.\n")
-
 
 def main():
     players = db.read_players()   # load from CSV at start

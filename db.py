@@ -2,7 +2,7 @@ import csv
 from player import Player
 
 FILENAME = "players.csv"
-FIELDNAMES = ["name", "pos", "ab", "h"]
+FIELDNAMES = ["first_name", "last_name", "pos", "ab", "h"]
 
 def read_players():
     players = []
