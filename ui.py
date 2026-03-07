@@ -25,8 +25,6 @@ from objects import Player, Lineup
 
 # Valid baseball positions allowed in the program
 POSITIONS = ("C", "1B", "2B", "3B", "SS", "LF", "CF", "RF", "P")
-
-# A divider line used to make the console output look clean
 LINE = "=" * 64
 
 
