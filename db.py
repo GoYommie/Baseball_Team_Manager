@@ -4,13 +4,19 @@ db.py
 Data access module for the Baseball Team Manager program.
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 This module is responsible for reading player data from the SQLite
 database and saving updated player data back to the database.
 =======
+=======
+>>>>>>> Stashed changes
 It is responsible for reading and writing player data using SQLite.
 This file acts as the Data Access Layer of the program.
 
 The program stores player information in a database file called "players.db".
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 """
 
@@ -40,6 +46,9 @@ def connect():
     """
     return sqlite3.connect("players.db")
 
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 # -----------------------------------------------------------
@@ -48,6 +57,7 @@ def connect():
 
 def read_players():
     """
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
     Reads all players from the database.
 
@@ -61,6 +71,9 @@ def read_players():
 =======
     Reads all players from the database and returns them as Player objects.
 >>>>>>> Stashed changes
+=======
+    Reads all players from the database and returns them as Player objects.
+>>>>>>> Stashed changes
     """
     players = []
 
@@ -68,7 +81,11 @@ def read_players():
     cursor = conn.cursor()
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     cursor.execute("SELECT * FROM Player ORDER BY batOrder")
+=======
+    cursor.execute("SELECT * FROM Player")
+>>>>>>> Stashed changes
 =======
     cursor.execute("SELECT * FROM Player")
 >>>>>>> Stashed changes
@@ -79,7 +96,11 @@ def read_players():
             first_name=row[2],
             last_name=row[3],
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
             pos=row[4],
+=======
+            position=row[4],
+>>>>>>> Stashed changes
 =======
             position=row[4],
 >>>>>>> Stashed changes
@@ -92,6 +113,7 @@ def read_players():
     return players
 
 
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
 def get_player(player_id):
     """
@@ -178,13 +200,49 @@ def update_player(player_id, first_name, last_name, position, at_bats, hits):
 def delete_player(player_id):
     """
     Deletes a player from the database using player ID.
+=======
+# -----------------------------------------------------------
+# Add Player
+# -----------------------------------------------------------
+
+def add_player(player):
+    """
+    Adds a new player to the database.
+>>>>>>> Stashed changes
+    """
+
+    conn = connect()
+    cursor = conn.cursor()
+
+<<<<<<< Updated upstream
+    cursor.execute("DELETE FROM Player WHERE playerID = ?", (player_id,))
+>>>>>>> Stashed changes
+
+    conn.commit()
+=======
+    cursor.execute("""
+        INSERT INTO Player (batOrder, firstName, lastName, position, atBats, hits)
+        VALUES (?, ?, ?, ?, ?, ?)
+    """, (0, player.first_name, player.last_name, player.position, player.ab, player.h))
+
+    conn.commit()
+    conn.close()
+
+
+# -----------------------------------------------------------
+# Delete Player (optional)
+# -----------------------------------------------------------
+
+def delete_player(player_id):
+    """
+    Deletes a player from the database using player ID.
     """
 
     conn = connect()
     cursor = conn.cursor()
 
     cursor.execute("DELETE FROM Player WHERE playerID = ?", (player_id,))
->>>>>>> Stashed changes
 
     conn.commit()
+>>>>>>> Stashed changes
     conn.close()
