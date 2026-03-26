@@ -1,147 +1,88 @@
 """
 db.py
 
-Data access module for the Baseball Team Manager program.
+This file acts as the Data Access Layer for the Baseball Team Manager program.
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-This module is responsible for reading player data from the SQLite
-database and saving updated player data back to the database.
-=======
-=======
->>>>>>> Stashed changes
-It is responsible for reading and writing player data using SQLite.
-This file acts as the Data Access Layer of the program.
+It is responsible for:
+- Connecting to the SQLite database
+- Reading player data
+- Adding new players
+- Updating existing players
+- Deleting players
 
-The program stores player information in a database file called "players.db".
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+The database file used is: players.db
 """
 
 import sqlite3
 from objects import Player
 
 
-<<<<<<< Updated upstream
+# -----------------------------------------------------------
+# CONNECT
+# -----------------------------------------------------------
 def connect():
     """
-    Creates and returns a connection to the SQLite database.
+    Creates a connection to the SQLite database.
 
-    Returns
-    -------
-    sqlite3.Connection
-        A connection object for players.db.
+    Returns:
+        sqlite3.Connection: Connection object used to interact with the database
     """
-    return sqlite3.connect("players.db")
-=======
-# -----------------------------------------------------------
-# Database Connection
-# -----------------------------------------------------------
-
-def connect():
-    """
-    Creates and returns a connection to the SQLite database.
-    """
+    # created this function so it can be used globally 
     return sqlite3.connect("players.db")
 
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
 
 # -----------------------------------------------------------
-# Read Players
+# READ ALL PLAYERS
 # -----------------------------------------------------------
-
 def read_players():
     """
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    Reads all players from the database.
+    Retrieves all players from the database.
 
-    This function retrieves all rows from the Player table
-    and converts them into Player objects.
-
-    Returns
-    -------
-    list
-        A list of Player objects.
-=======
-    Reads all players from the database and returns them as Player objects.
->>>>>>> Stashed changes
-=======
-    Reads all players from the database and returns them as Player objects.
->>>>>>> Stashed changes
+    Returns:
+        list: A list of Player objects created from database records
     """
-    players = []
+    players = []  # list to store player objects
 
-    conn = connect()
+    conn = connect()  # database connection
     cursor = conn.cursor()
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    cursor.execute("SELECT * FROM Player ORDER BY batOrder")
-=======
+    # select all players from the table
     cursor.execute("SELECT * FROM Player")
->>>>>>> Stashed changes
-=======
-    cursor.execute("SELECT * FROM Player")
->>>>>>> Stashed changes
     rows = cursor.fetchall()
 
+    # convert each row into a Player object
     for row in rows:
+        # row indexes that match database columns
         player = Player(
-            first_name=row[2],
-            last_name=row[3],
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-            pos=row[4],
-=======
-            position=row[4],
->>>>>>> Stashed changes
-=======
-            position=row[4],
->>>>>>> Stashed changes
-            ab=row[5],
-            h=row[6]
+            first_name=row[2],   # firstName column
+            last_name=row[3],    # lastName column
+            pos=row[4],          # position column
+            ab=row[5],           # atBats column
+            h=row[6]             # hits column
         )
         players.append(player)
 
-    conn.close()
+    conn.close()  
     return players
 
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
+# -----------------------------------------------------------
+# GET ONE PLAYER
+# -----------------------------------------------------------
 def get_player(player_id):
     """
-    Retrieves one player from the database using playerID.
+    Retrieves a single player using their ID.
 
-    Parameters
-    ----------
-    player_id : int
-        The ID of the player to retrieve.
+    Parameters:
+        player_id (int): The ID entered by the user
 
-    Returns
-    -------
-    tuple or None
-        A row from the Player table if found, otherwise None.
-=======
-# -----------------------------------------------------------
-# Add Player
-# -----------------------------------------------------------
-
-def add_player(player):
-    """
-    Adds a new player to the database.
->>>>>>> Stashed changes
+    Returns:
+        tuple: The database row if found, otherwise None
     """
     conn = connect()
     cursor = conn.cursor()
 
-<<<<<<< Updated upstream
+    # uses parameterized query 
     cursor.execute("SELECT * FROM Player WHERE playerID = ?", (player_id,))
     row = cursor.fetchone()
 
@@ -149,100 +90,80 @@ def add_player(player):
     return row
 
 
-def update_player(player_id, first_name, last_name, position, at_bats, hits):
-    """
-    Updates one player's data in the database.
-
-    Parameters
-    ----------
-    player_id : int
-        The player's ID.
-    first_name : str
-        The updated first name.
-    last_name : str
-        The updated last name.
-    position : str
-        The updated field position.
-    at_bats : int
-        The updated at-bats value.
-    hits : int
-        The updated hits value.
-    """
-    conn = connect()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        UPDATE Player
-        SET firstName = ?,
-            lastName = ?,
-            position = ?,
-            atBats = ?,
-            hits = ?
-        WHERE playerID = ?
-    """, (first_name, last_name, position, at_bats, hits, player_id))
-=======
-    conn = connect()
-    cursor = conn.cursor()
-
-    cursor.execute("""
-        INSERT INTO Player (batOrder, firstName, lastName, position, atBats, hits)
-        VALUES (?, ?, ?, ?, ?, ?)
-    """, (0, player.first_name, player.last_name, player.position, player.ab, player.h))
-
-    conn.commit()
-    conn.close()
-
-
 # -----------------------------------------------------------
-# Delete Player (optional)
+# ADD PLAYER
 # -----------------------------------------------------------
-
-def delete_player(player_id):
-    """
-    Deletes a player from the database using player ID.
-=======
-# -----------------------------------------------------------
-# Add Player
-# -----------------------------------------------------------
-
 def add_player(player):
     """
     Adds a new player to the database.
->>>>>>> Stashed changes
-    """
 
+    Parameters:
+        player (Player): A Player object containing player data
+    """
     conn = connect()
     cursor = conn.cursor()
 
-<<<<<<< Updated upstream
-    cursor.execute("DELETE FROM Player WHERE playerID = ?", (player_id,))
->>>>>>> Stashed changes
-
-    conn.commit()
-=======
+    # insert new player values into table
     cursor.execute("""
         INSERT INTO Player (batOrder, firstName, lastName, position, atBats, hits)
         VALUES (?, ?, ?, ?, ?, ?)
-    """, (0, player.first_name, player.last_name, player.position, player.ab, player.h))
+    """, (
+        0,                      # batOrder default value
+        player.first_name,
+        player.last_name,
+        player.pos,
+        player.ab,
+        player.h
+    ))
+
+    conn.commit()  # save changes to database
+    conn.close()
+
+
+# -----------------------------------------------------------
+# UPDATE PLAYER
+# -----------------------------------------------------------
+def update_player(player_id, first_name, last_name, pos, ab, hits):
+    """
+    Updates an existing player's data.
+
+    Parameters:
+        player_id (int): ID of the player to update
+        first_name (str): Updated first name
+        last_name (str): Updated last name
+        pos (str): Updated position
+        ab (int): Updated at-bats
+        hits (int): Updated hits
+    """
+    conn = connect()
+    cursor = conn.cursor()
+
+    # update player record with new values
+    cursor.execute("""
+        UPDATE Player
+        SET firstName = ?, lastName = ?, position = ?, atBats = ?, hits = ?
+        WHERE playerID = ?
+    """, (first_name, last_name, pos, ab, hits, player_id))
 
     conn.commit()
     conn.close()
 
 
 # -----------------------------------------------------------
-# Delete Player (optional)
+# DELETE PLAYER
 # -----------------------------------------------------------
-
 def delete_player(player_id):
     """
-    Deletes a player from the database using player ID.
-    """
+    Deletes a player from the database.
 
+    Parameters:
+        player_id (int): ID of the player to delete
+    """
     conn = connect()
     cursor = conn.cursor()
 
+    # delete player using ID
     cursor.execute("DELETE FROM Player WHERE playerID = ?", (player_id,))
 
     conn.commit()
->>>>>>> Stashed changes
     conn.close()
