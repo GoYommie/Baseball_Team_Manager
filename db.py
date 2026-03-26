@@ -1,84 +1,117 @@
 """
 db.py
 
-This file handles the data storage for the Baseball Team Manager program.
+Data access module for the Baseball Team Manager program.
 
-It is responsible for reading and writing player data to a CSV file.
-This file acts as the Data Access Layer of the program.
-
-The program stores player information in a file called "players.csv".
-Each row in the CSV file represents one player.
+This module is responsible for reading player data from the SQLite
+database and saving updated player data back to the database.
 """
 
-import csv
+import sqlite3
 from objects import Player
 
 
-# -----------------------------------------------------------
-# Constants
-# -----------------------------------------------------------
+def connect():
+    """
+    Creates and returns a connection to the SQLite database.
 
-# Name of the CSV file used to store player data
-FILENAME = "players.csv"
-
-# Column names used in the CSV file
-FIELDNAMES = ["first_name", "last_name", "pos", "ab", "h"]
+    Returns
+    -------
+    sqlite3.Connection
+        A connection object for players.db.
+    """
+    return sqlite3.connect("players.db")
 
 
 def read_players():
     """
-    Reads player data from the CSV file.
+    Reads all players from the database.
 
-    This function opens the players.csv file and converts each row
-    into a Player object using the Player.from_dict() method.
+    This function retrieves all rows from the Player table
+    and converts them into Player objects.
 
     Returns
     -------
     list
-        A list of Player objects that represent the players stored
-        in the CSV file.
+        A list of Player objects.
     """
-
     players = []
 
-    # open the CSV file for reading
-    with open(FILENAME, newline="", encoding="utf-8") as f:
+    conn = connect()
+    cursor = conn.cursor()
 
-        # read the CSV rows as dictionaries
-        reader = csv.DictReader(f, fieldnames=FIELDNAMES)
+    cursor.execute("SELECT * FROM Player ORDER BY batOrder")
+    rows = cursor.fetchall()
 
-        for row in reader:
+    for row in rows:
+        player = Player(
+            first_name=row[2],
+            last_name=row[3],
+            pos=row[4],
+            ab=row[5],
+            h=row[6]
+        )
+        players.append(player)
 
-            # convert numeric values from strings to integers
-            # because CSV files store everything as text
-            row["ab"] = int(row["ab"])
-            row["h"] = int(row["h"])
-
-            # create a Player object from the dictionary
-            players.append(Player.from_dict(row))
-
+    conn.close()
     return players
 
 
-def write_players(players):
+def get_player(player_id):
     """
-    Writes player data to the CSV file.
-
-    This function saves the current lineup of players to the
-    players.csv file so the data persists after the program ends.
+    Retrieves one player from the database using playerID.
 
     Parameters
     ----------
-    players : iterable
-        A collection of Player objects that will be written to the file.
+    player_id : int
+        The ID of the player to retrieve.
+
+    Returns
+    -------
+    tuple or None
+        A row from the Player table if found, otherwise None.
     """
+    conn = connect()
+    cursor = conn.cursor()
 
-    # open the CSV file for writing (this overwrites the old file)
-    with open(FILENAME, "w", newline="", encoding="utf-8") as f:
+    cursor.execute("SELECT * FROM Player WHERE playerID = ?", (player_id,))
+    row = cursor.fetchone()
 
-        # create a CSV writer using the field names
-        writer = csv.DictWriter(f, fieldnames=FIELDNAMES)
+    conn.close()
+    return row
 
-        # write each player's data to the file
-        for p in players:
-            writer.writerow(p.to_dict())
+
+def update_player(player_id, first_name, last_name, position, at_bats, hits):
+    """
+    Updates one player's data in the database.
+
+    Parameters
+    ----------
+    player_id : int
+        The player's ID.
+    first_name : str
+        The updated first name.
+    last_name : str
+        The updated last name.
+    position : str
+        The updated field position.
+    at_bats : int
+        The updated at-bats value.
+    hits : int
+        The updated hits value.
+    """
+    conn = connect()
+    cursor = conn.cursor()
+
+    cursor.execute("""
+        UPDATE Player
+        SET firstName = ?,
+            lastName = ?,
+            position = ?,
+            atBats = ?,
+            hits = ?
+        WHERE playerID = ?
+    """, (first_name, last_name, position, at_bats, hits, player_id))
+
+    conn.commit()
+    conn.close()
